@@ -1,0 +1,72 @@
+body{
+	font-size: 16px;
+}
+
+span.select2{
+	width: 100% !important;
+}
+
+div.date_pic{
+	width: 100%;
+}
+label.error{
+	color:red;
+}
+
+.description-post{
+	height: 100px;
+	overflow: hidden;
+}
+
+.table-hover>tbody>tr:hover{
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+.notRead{
+	background-color: #dce0e0 !important;
+}
+
+.fc-content{
+	text-align: center;
+}
+
+.fc-today{
+    background: #b7ebba !important;
+    border: none !important;
+    border-top: 1px solid #ddd !important;
+    font-weight: bold;
+} 
+
+.baocao{
+	font-family: "Times New Roman", Times, serif;
+	font-size: 18px;
+}
+
+.baocao .row p, .row strong{
+	font-size: 18px;
+	line-height: 25px;
+    margin: -3px;
+    text-indent: 15px;
+    text-align: justify;
+}
+
+#CanBo_ID_KNHT_edit span.select2{
+/*	width: 100%;*/
+}
+
+td.ToolEdit: hover{
+	cursor: pointer;
+}
+
+td.ToolEdit span: hover{
+	cursor: pointer;
+}
+
+span.frac {display: inline-block;text-align: center;vertical-align:middle; } span.frac > tuso, span.frac > mauso {   display: block;   font: inherit;   padding: 0 0.2em; } span.frac > tuso {border-bottom: 0.08em solid;} span.frac > span {display: none;}
+
+%frac, tuso, mauso:
+
+span#lbl_isWord:first-letter{
+    text-transform: capitalize;
+}
