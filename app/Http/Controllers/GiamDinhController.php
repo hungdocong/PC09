@@ -193,7 +193,10 @@ class GiamDinhController extends Controller
             $dem = 0;$arr_error = [];
             foreach ($reader->getSheetIterator() as $sheet) {
                 foreach ($sheet->getRowIterator() as $row) {
-
+                   
+                    if (collect($row)->filter(fn($v) => $v !== null && $v !== '')->isEmpty()) {
+                        break;
+                    }
                     $cells = $row->getCells();
 
                     if (!is_numeric($cells[0]->getValue())){
@@ -201,52 +204,64 @@ class GiamDinhController extends Controller
                     }
 
                     $STT = $cells[0]->getValue(); 
-                    if($cells[1]== null || $cells[1] == "")
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Lĩnh vực giám định</span> không được bỏ trống.']);
+
+                    //Số hồ sơ
+                    if($cells[1]== null || $cells[1] == ""){
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Số hồ sơ</span> không được bỏ trống.']);
+                    }else if(!Validate_SoHoSo($cells[1]->getValue())){
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Số hồ sơ: <span class="text-red">'. $cells[1]->getValue() .'</span> không đúng định dạng.']);
+                    }else if(CheckExist_SoHoSo($cells[1]->getValue())){
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Số hồ sơ: <span class="text-red">'. $cells[5]->getValue() .'</span> đã bị trùng với vụ việc khác.']);
+                    }
+
+                    //số trưng cầu
                     if($cells[2]->getValue()== null || $cells[2]->getValue() == ""){
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Số trưng cầu</span> không được bỏ trống.']);
                     }
 
+                    //Ngày trưng cầu
                     if($cells[3]->getValue()== null || $cells[3]->getValue() == ""){
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Ngày trưng cầu</span> không được bỏ trống.']);
                     }else if(is_string($cells[3]->getValue())){
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Ngày trưng cầu: <span class="text-red">'. $cells[3]->getValue() .' </span> sai định dạng ngày/tháng/năm hoặc không tồn tại.']);
                     }
-
                     if($cells[4]== null || $cells[4] == "")
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Đơn vị trưng cầu</span> không được bỏ trống.']);
-                    if($cells[5]== null || $cells[5] == ""){
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Số hồ sơ</span> không được bỏ trống.']);
-                    }else if(!Validate_SoHoSo($cells[5]->getValue())){
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Số hồ sơ: <span class="text-red">'. $cells[5]->getValue() .'</span> không đúng định dạng.']);
-                    }else if(CheckExist_SoHoSo($cells[5]->getValue())){
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Số hồ sơ: <span class="text-red">'. $cells[5]->getValue() .'</span> đã bị trùng với vụ việc khác.']);
-                    }
 
-                    if($cells[6]->getValue()== null || $cells[6]->getValue() == ""){
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Ngày tiếp nhận</span> không được bỏ trống.']);
-                    }else if(is_string($cells[6]->getValue())){
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Ngày tiếp nhận: <span class="text-red">'. $cells[3]->getValue() .' </span> sai định dạng ngày/tháng/năm hoặc không tồn tại.']);
-                    }
-
-                    if($cells[9]== null || $cells[9] == "")
+                    
+                    if($cells[5]== null || $cells[5] == "")
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Tên vụ việc</span> không được bỏ trống.']);
-                    if($cells[10]->getValue()== null || $cells[10]->getValue() == "")
+                    if($cells[6]->getValue()== null || $cells[6]->getValue() == "")
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Thời gian xảy ra</span> không được bỏ trống.']);
 
-                    if($cells[11]== null || $cells[11] == "")
+                    if($cells[7]== null || $cells[7] == "")
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Địa điểm xảy ra vụ việc</span> không được bỏ trống.']);
-                    if($cells[12]== null || $cells[12] == "")
+                    
+                    //Ngày tiếp nhận/Ngày lập
+                    if($cells[8]->getValue()== null || $cells[8]->getValue() == ""){
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Ngày tiếp nhận</span> không được bỏ trống.']);
+                    }else if(is_string($cells[8]->getValue())){
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Ngày tiếp nhận: <span class="text-red">'. $cells[8]->getValue() .' </span> sai định dạng ngày/tháng/năm hoặc không tồn tại.']);
+                    }
+
+                   
+                    //Ngày đăng ký $cells[9]
+                    
+                    if($cells[10]== null || $cells[10] == "")
                         array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Thời hạn giám định</span> không được bỏ trống.']);
+                     //Ngày kết thúc $cells[11]
+
+                    if($cells[12]== null || $cells[12] == "")
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Lĩnh vực giám định</span> không được bỏ trống.']);                   
                     
                     if($cells[13]== null || $cells[13] == ""){
-                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Giám định viên</span> không được bỏ trống.']);
+                        array_push($arr_error, ['STT' => $STT, 'ERROR' => '<span class="text-red">Cán bộ quản lý/Giám định viên</span> không được bỏ trống.']);
                     }else{
                         $arr_gdv = explode(",", $cells[13]);
                         for ($i=0; $i < count($arr_gdv) ; $i++) {
                             $canbo = DB::table('can_bo')->where('HoTen', trim($arr_gdv[$i]))->count();
                             if($canbo == 0)
-                                array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Giám định viên: <span class="text-red">' . $arr_gdv[$i] . '</span> không có trong danh sách']);
+                                array_push($arr_error, ['STT' => $STT, 'ERROR' => 'Cán bộ quản lý/Giám định viên: <span class="text-red">' . $arr_gdv[$i] . '</span> không có trong danh sách']);
                         }
                     }
 
@@ -259,30 +274,31 @@ class GiamDinhController extends Controller
                         }
                     }
 
-                    $TenVuViec = $cells[1]; 
+                    $SoHoSo = $cells[1] == null ? "trống": $cells[1];
                     $SoCV = $cells[2]; 
                     $NgayTC = is_string($cells[3]->getValue()) ? $cells[3]->getValue() : Carbon::parse($cells[3]->getValue())->format('d/m/Y');
                     $DonVi_TC = $cells[4]; 
-                    $SoHoSo = $cells[5] == null ? "trống": $cells[5]; 
+                     $NoiDung = $cells[5]; 
+                    $ThoiGian = is_string($cells[6]->getValue()) ? $cells[6]->getValue() : Carbon::parse($cells[6]->getValue())->format('d/m/Y'); 
+                    $DiaDiem = $cells[7]; 
                     
-                    $NgayTiepNhan = $cells[6]->getValue();
-
-                    $TrangThai = 0;
-                    if ($cells[7]->getValue() == "") {
-                        $NgayGD = Carbon::parse($cells[7]->getValue())->format('d/m/Y');
+                    $NgayTiepNhan = $cells[8]->getValue();
+                    
+                    //Ngày đăng ký
+                    if ($cells[9]->getValue() != "") {
+                        $NgayGD = Carbon::parse($cells[9]->getValue())->format('d/m/Y');
                         $TrangThai = 1;
                     }else{
                         $NgayGD = "";
                     }
 
-                    $NgayKT =  $cells[8]->getValue() == "" ? "": Carbon::parse($cells[8]->getValue())->format('d/m/Y');  
-                    $NoiDung = $cells[9]; 
-                    $ThoiGian = is_string($cells[10]->getValue()) ? $cells[10]->getValue() : Carbon::parse($cells[10]->getValue())->format('d/m/Y'); 
-                    $DiaDiem = $cells[11]; 
-                    $ThoiHan_GD = $cells[12]; 
+                    $ThoiHan_GD = $cells[10]; 
+                    $NgayKT =  $cells[11]->getValue() == "" ? "": Carbon::parse($cells[11]->getValue())->format('d/m/Y');
+                    $TenVuViec = $cells[12]; 
+                    
                     $GĐV = $cells[13]; 
                     $TLGĐ = $cells[14]== null ? "trống": $cells[14];  
-
+                    $TrangThai = 0;
 
                     $giamdinh[$dem] = [
                         "STT" => $STT,

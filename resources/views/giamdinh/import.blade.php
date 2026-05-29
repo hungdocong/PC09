@@ -25,7 +25,7 @@
                     <div class="box box-solid">
                         <div class="box-header with-border">
                           <i class="fa fa-close "></i>
-                          <h3 class="box-title">Đã xảy ra lỗi khi nhập file vụ việc</h3>
+                          <h3 class="box-title">Đã xảy ra lỗi khi nhập file vụ việc: <b>{{ Session::get('File_Name') != null ? Session::get('File_Name') : 'Không tìm thấy file.' }}</h3>
                       </div><!-- /.box-header -->
                       <div class="box-body">
                         <blockquote>
@@ -53,21 +53,20 @@
                 <thead>
                     <tr>
                       <th class="text-center">#</th>
-                      <th class="text-center">Lĩnh vực</th>
+                      <th class="text-center">Số HS</th>
                       <th class="text-center">Trưng cầu số</th>
                       <th class="text-center">Ngày TC</th>
                       <th class="text-center">Đơn vị TC</th>
-                      <th class="text-center">Số HS</th>
-                      <th class="text-center">Ngày nhận</th>
-                      <th class="text-center">Ngày GĐ</th>
-                      <th class="text-center">Ngày KT</th>
                       <th class="text-center">Tên vụ việc</th>
                       <th class="text-center">Thời gian</th>
                       <th class="text-center">Địa điểm</th>
+                      <th class="text-center">Ngày tiếp nhận/Ngày lập</th>
+                      <th class="text-center">Ngày Đky</th>
                       <th class="text-center">Thời hạn GĐ</th>
+                      <th class="text-center">Ngày KT</th>
+                      <th class="text-center">Lĩnh vực</th>
                       <th class="text-center">GĐV</th>
                       <th class="text-center">Trợ lý GĐ</th>
-                      
                     </tr>
                 </thead>
                 <tbody>
@@ -76,18 +75,18 @@
                       @foreach (Session::get('giamdinh') as $key=>$value)
                           <tr>
                             <td class="text-center">{{ $dem }}</td>
-                            <td class="text-center">{{ $value['TenVuViec'] }}</td>
+                            <td class="text-center">{{ $value['SoHoSo'] }}</td>
                             <td class="text-center">{{ $value['SoCV'] }}</td>
                             <td class="text-center">{{ $value['NgayTC'] }}</td>
                             <td class="text-center">{{ $value['DonVi_TC'] }}</td>
-                            <td class="text-center">{{ $value['SoHoSo'] }}</td>
-                            <td class="text-center">{{ \Carbon\Carbon::parse($value['NgayTiepNhan'])->format('d/m/Y') }}</td>
-                            <td class="text-center">{{ empty($value['NgayGD']) ? null: $value['NgayGD'] }}</td>
-                            <td class="text-center">{{ empty($value['NgayKT']) ? null: $value['NgayKT'] }}</td>
                             <td class="text-center">{{ $value['NoiDung'] }}</td>
                             <td class="text-center">{{ $value['ThoiGian'] }}</td>
                             <td class="text-center">{{ $value['DiaDiem'] }}</td>
+                            <td class="text-center">{{ \Carbon\Carbon::parse($value['NgayTiepNhan'])->format('d/m/Y') }}</td>
+                            <td class="text-center">{{ empty($value['NgayGD']) ? null: $value['NgayGD'] }}</td>
                             <td class="text-center">{{ $value['ThoiHan_GD'] }}</td>
+                            <td class="text-center">{{ empty($value['NgayKT']) ? null: $value['NgayKT'] }}</td>
+                            <td class="text-center">{{ $value['TenVuViec'] }}</td>
                             <td class="text-center">{{ $value['GĐV'] }}</td>
                             <td class="text-center">{{ $value['TLGĐ'] }}</td>
                         </tr>
@@ -122,11 +121,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/giam-dinh/import" enctype = "multipart/form-data" method="Post" id="frmImport">
+                <form action="/giam-dinh/FrmImport" enctype = "multipart/form-data" method="Post" id="frmImport">
                     {{ csrf_field() }}
                     <div class="form-group col-md-12">
                       <label for="exampleInputFile">Chọn file</label>
-                      <input type="file" name="File" id="exampleInputFile" accept=".xls, .xlsx, .csv">
+                      <input type="file" name="File" id="exampleInputFile" accept=".xls, .xlsx, .csv" required>
                       <p class="help-block">Chọn file thống kê công văn: .xls, .xlsx, .csv</p>
                     </div>
                     <div class="form-group text-center">
